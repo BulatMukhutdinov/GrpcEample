@@ -8,7 +8,8 @@ machine:
 
 dependencies:
     pre:
-        - cp -r licenses $ANDROID_HOME/. && cd $ANDROID_HOME/licenses && ls -la
+        - echo "TESTING"
+        - cp -r licenses /usr/local/android-sdk-linux
         - wget "https://services.gradle.org/distributions/gradle-4.0.1-bin.zip"; unzip gradle-4.0.1-bin.zip
         - source environmentSetup.sh && copyEnvVarsToGradleProperties
     override:
