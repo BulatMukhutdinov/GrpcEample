@@ -52,17 +52,21 @@ test:
         # unlock the emulator screen
         - sleep 30
         - adb shell input keyevent 82
+        - mkdir -p app/build/reports/tests/debug $CIRCLE_TEST_REPORTS/AppUnitTests
+        - mkdir -p app/build/reports/test-report $CIRCLE_TEST_REPORTS/ComponentTests
+        - mkdir -p app/build/reports/androidTests/connected $CIRCLE_TEST_REPORTS/AndroidTests
+        - mkdir -p app/build/reports/jacoco/test/html $CIRCLE_TEST_REPORTS/CodeCoverageReport
         # run tests  against the emulator.
         - (./gradlew jacoco -PdisablePreDex):
             timeout: 1800
         # copy the build outputs to artifacts
         - cp -r app/build/outputs $CIRCLE_ARTIFACTS
-         # copy test results
+        # copy test results
         - mv app/build/reports/tests/debug $CIRCLE_TEST_REPORTS/AppUnitTests
-        - mv appCt/build/test-report $CIRCLE_TEST_REPORTS/ComponentTests
-        - mv appIt/build/reports/androidTests/connected $CIRCLE_TEST_REPORTS/AndroidTests
-        - mv build/reports/jacoco/test/html $CIRCLE_TEST_REPORTS/CodeCoverageReport
+        - mv app/build/reports/test-report $CIRCLE_TEST_REPORTS/ComponentTests
+        - mv app/build/reports/androidTests/connected $CIRCLE_TEST_REPORTS/AndroidTests
+        - mv app/build/reports/jacoco/test/html $CIRCLE_TEST_REPORTS/CodeCoverageReport
         # copy lint report
-        - mkdir $CIRCLE_TEST_REPORTS/Lint
-        - mv app/build/outputs/lint-results_files $CIRCLE_TEST_REPORTS/Lint
-        - mv app/build/outputs/lint-results.html $CIRCLE_TEST_REPORTS/Lint/lint-app-results.html
+        #- mkdir $CIRCLE_TEST_REPORTS/Lint
+        #- mv app/build/outputs/lint-results_files $CIRCLE_TEST_REPORTS/Lint
+        #- mv app/build/outputs/lint-results.html $CIRCLE_TEST_REPORTS/Lint/lint-app-results.html
