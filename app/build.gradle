@@ -248,8 +248,9 @@ dependencies {
     testCompile "org.powermock:powermock-module-junit4-rule:${powerMockVersion}"
     testCompile "org.powermock:powermock-classloading-xstream:${powerMockVersion}"
     // Robolectric
-    testCompile 'org.robolectric:robolectric:3.3.2'
-    testCompile "org.robolectric:shadows-support-v4:3.3.2"
+    testCompile('org.robolectric:robolectric:3.3.2') {
+        exclude group: 'com.google.protobuf', module: 'protobuf-java'
+    }
 
     // Espresso UI Testing dependencies.
     androidTestCompile("com.android.support.test.espresso:espresso-contrib:${espressoVersion}", {

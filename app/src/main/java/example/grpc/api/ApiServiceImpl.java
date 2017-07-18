@@ -20,6 +20,8 @@ public class ApiServiceImpl implements ApiService {
         .forAddress(DNOTE_API_ADDRESS, DNOTE_API_PORT)
         .usePlaintext(true)
         .build();
+    publicUserServiceBlockingStub = PublicUserServiceGrpc
+        .newBlockingStub(channel);
   }
 
 
@@ -28,7 +30,7 @@ public class ApiServiceImpl implements ApiService {
     IsUniqueUsernameRequest isUniqueUsernameRequest = IsUniqueUsernameRequest.newBuilder()
         .setUsername(username)
         .build();
-    return getPublicUserServiceBlockingStub().isUniqueUsername(isUniqueUsernameRequest)
+    return publicUserServiceBlockingStub.isUniqueUsername(isUniqueUsernameRequest)
         .getIsUnique();
   }
 
@@ -46,16 +48,5 @@ public class ApiServiceImpl implements ApiService {
     return m.matches();
   }
 
-
-  public PublicUserServiceGrpc.PublicUserServiceBlockingStub getPublicUserServiceBlockingStub() {
-    if (publicUserServiceBlockingStub == null) {
-      Class lock = ApiServiceImpl.class;
-      synchronized (lock) {
-        publicUserServiceBlockingStub = PublicUserServiceGrpc
-            .newBlockingStub(channel);
-      }
-    }
-    return publicUserServiceBlockingStub;
-  }
 
 }

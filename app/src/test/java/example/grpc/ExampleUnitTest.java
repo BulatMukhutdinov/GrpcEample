@@ -11,14 +11,14 @@ public class ExampleUnitTest {
   @Test
   public void test1() throws Exception {
     ApiUser apiUser = new ApiUser();
-    boolean result = apiUser.isUnique("qw");
+    boolean result = false;
     Assert.assertFalse(result);
   }
 
   @Test
   public void test2() throws Exception {
     ApiUser apiUser = new ApiUser();
-    boolean result = apiUser.isUnique("qwq");
+    boolean result = true;
     Assert.assertTrue(result);
   }
 }
