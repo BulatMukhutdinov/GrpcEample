@@ -24,7 +24,7 @@ test:
         - (./gradlew assemble):
             timeout: 360
         # start the emulator
-        - emulator -avd circleci-android22 -no-audio -no-window:
+        - emulator -avd circleci-android24 -no-audio -no-window:
             background: true
             parallel: true
         # wait for it to have booted
@@ -36,5 +36,12 @@ test:
         - ./gradlew jacoco -PdisablePreDex
         # copy the build outputs to artifacts
         - cp -r app/build/outputs $CIRCLE_ARTIFACTS
-        # copy the test results to the test results directory.
-        - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+         # copy test results
+        - mv app/build/reports/tests/debug $CIRCLE_TEST_REPORTS/AppUnitTests
+        - mv appCt/build/test-report $CIRCLE_TEST_REPORTS/ComponentTests
+        - mv appIt/build/reports/androidTests/connected $CIRCLE_TEST_REPORTS/AndroidTests
+        - mv build/reports/jacoco/test/html $CIRCLE_TEST_REPORTS/CodeCoverageReport
+        # copy lint report
+        - mkdir $CIRCLE_TEST_REPORTS/Lint
+        - mv app/build/outputs/lint-results_files $CIRCLE_TEST_REPORTS/Lint
+        - mv app/build/outputs/lint-results.html $CIRCLE_TEST_REPORTS/Lint/lint-app-results.html
