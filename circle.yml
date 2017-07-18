@@ -2,6 +2,7 @@ general:
     artifacts:
         - /home/ubuntu/GrpcEample/app/build/outputs/apk/
         - /home/ubuntu/GrpcEample/app/build/reports/jacoco/jacoco/html/
+        - /home/ubuntu/GrpcEample/app/build/reports/pitest/debug/
 
 machine:
     environment:
@@ -25,6 +26,8 @@ test:
         # start the build
         - (./gradlew assemble):
             timeout: 360
+        - (./gradlew pitest):
+            timeout: 1800
         # start the emulator
         - emulator -avd circleci-android22  -no-audio -no-window -gpu off:
             background: true
@@ -36,7 +39,7 @@ test:
         - adb shell input keyevent 82
         # run tests  against the emulator.
         - (./gradlew jacoco -PdisablePreDex):
-            timeout: 1800
+            timeout: 1800    
         # copy the build outputs to artifacts
         - cp -r app/build/outputs $CIRCLE_ARTIFACTS
         # copy the test results to the test results directory.
