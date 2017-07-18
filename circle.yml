@@ -21,6 +21,8 @@ checkout:
     post:
       - cp -r licenses/. $ANDROID_HOME/licenses
 test:
+    post:
+        - cp -R build/reports/* $CIRCLE_ARTIFACTS
     override:
         # start the build
         - (./gradlew assemble):
@@ -42,5 +44,3 @@ test:
         - cp -r app/build/outputs $CIRCLE_ARTIFACTS
         # copy the test results to the test results directory.
         - cp -r app/build/reports/jacoco/jacoco/html/* $CIRCLE_TEST_REPORTS
-   post:
-        - cp -R build/reports/* $CIRCLE_ARTIFACTS
