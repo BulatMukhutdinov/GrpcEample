@@ -42,7 +42,9 @@ test:
         - (./gradlew jacoco -PdisablePreDex):
             timeout: 1800
         # copy the build outputs to artifacts
-        #- cp -r app/build/outputs $CIRCLE_ARTIFACTS
+        - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+        # copy the test results to the test results directory.
+        - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
         # copy test results
         - mv app/build/reports/tests/debug $CIRCLE_TEST_REPORTS/AppUnitTests
         - mv appCt/build/test-report $CIRCLE_TEST_REPORTS/ComponentTests
