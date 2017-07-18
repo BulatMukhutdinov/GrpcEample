@@ -21,8 +21,6 @@ checkout:
     post:
       - cp -r licenses/. $ANDROID_HOME/licenses
 test:
-    post:
-        - cp -R build/reports/* $CIRCLE_ARTIFACTS
     override:
         # start the build
         - (./gradlew assemble):
