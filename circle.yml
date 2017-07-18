@@ -36,7 +36,6 @@ test:
         # unlock the emulator screen
         - sleep 30
         - adb shell input keyevent 82
-        - gradle check jacocoTestReport
         # run tests  against the emulator.
         - (./gradlew jacoco -PdisablePreDex):
             timeout: 1800
