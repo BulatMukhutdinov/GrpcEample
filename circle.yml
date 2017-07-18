@@ -1,85 +1,46 @@
+general:
+    artifacts:
+        - /home/ubuntu/GrpcEample/app/build/outputs/apk/
+        - /home/ubuntu/GrpcEample/app/build/reports/jacoco/jacoco/html/
+
 machine:
-  java:
-    # latest wiremock version needs java 8
-    version: oraclejdk8
-  environment:
-    # auth for the coveralls report
-    COVERALLS_REPO_TOKEN: mHJjy4h8zt9RIIBKg8sBosF5JkKsFk139
+    environment:
+        ANDROID_HOME: /usr/local/android-sdk-linux
 
-    # chooce network device for tests with wiremock support and emulator
-    TEST_MOCK_IFACE: eth0
-
+dependencies:
+    pre:
+        - cp -r licenses $ANDROID_HOME
+        - wget "https://services.gradle.org/distributions/gradle-4.0.1-bin.zip"; unzip gradle-4.0.1-bin.zip
+        - cd gradle-4.0.1 && ls -la
+        - source environmentSetup.sh && copyEnvVarsToGradleProperties
+  
+    override:
+        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-25.0.3,android-25,extra-google-m2repository,extra-google-google_play_services,extra-android-m2repository
+        - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
+checkout:
+    post:
+      - cp -r licenses/. $ANDROID_HOME/licenses
 test:
-  pre:
-  # emulator startup need some minutes that's why start it before first build/test steps for build speed up
-    - emulator -avd circleci-android22 -no-audio -no-window:
-        background: true
-        parallel: true
-
-  override:
-    # Build the code
-    - ./gradlew app:assembleDebug
-
-    # Execute Unit Tests
-    - ./gradlew app:test
-
-    # start wiremock to support tests with network communication
-    - tools/src/main/resources/start-wiremock.sh:
-          # start at background to use wiremock in next build steps
-          background: true
-
-    # Execute Component Tests
-    - ./gradlew appCt:test
-
-    # Check lint hints
-    - ./gradlew app:lint
-
-    # Build instrumented test code
-    # fix apk not build https://code.google.com/p/android/issues/detail?id=180689
-    - ./gradlew appIt:assembleDebug
-
-    # ensure that the emulator is ready to use
-    - circle-android wait-for-boot
-    # the necessary sleep duration may change with time and depends on the pre tasks length.
-    # When all pre tasks are run long enough then waiting will not be necessary anymore.
-    # This sleep should avoid the com.android.builder.testing.api.DeviceException: com.android.ddmlib.ShellCommandUnresponsiveException
-    - sleep 30
-    # at least remove the look screen
-    - adb shell input keyevent 82
-
-    # later we collect the logs from test run
-    - adb logcat -d
-
-    # execute tests on emulator
-    - ./gradlew appIt:connectedCheck
-
-    # Create coverage report
-    - ./gradlew jacoco
-
-    # copy test results
-    - mv app/build/reports/tests/debug $CIRCLE_TEST_REPORTS/AppUnitTests
-    - mv appCt/build/test-report $CIRCLE_TEST_REPORTS/ComponentTests
-    - mv appIt/build/reports/androidTests/connected $CIRCLE_TEST_REPORTS/AndroidTests
-    - mv build/reports/jacoco/test/html $CIRCLE_TEST_REPORTS/CodeCoverageReport
-
-    # copy lint report
-    - mkdir $CIRCLE_TEST_REPORTS/Lint
-    - mv app/build/outputs/lint-results_files $CIRCLE_TEST_REPORTS/Lint
-    - mv app/build/outputs/lint-results.html $CIRCLE_TEST_REPORTS/Lint/lint-app-results.html
-
-    # circleCi proper test value feature
-    - mkdir $CIRCLE_TEST_REPORTS/junit
-    - find */build/test-results -name "*.xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-    - find */build/outputs/androidTest-results/ -name "*.xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-
-    # collect logs from emulator
-    - adb logcat -d > $CIRCLE_ARTIFACTS/logcat_emulator.txt
-
-# Only executed if all tasks are successful
-deployment:
-
-  # report coverage to coveralls
-  coverage:
-    branch: [master, rewrite]
-    commands:
-    - ./gradlew coveralls
+    override:
+        # start the build
+        - (./gradlew assemble):
+            timeout: 360
+        # start the emulator
+        - emulator -avd circleci-android22  -no-audio -no-window -gpu off:
+            background: true
+            parallel: true
+        # wait for it to have booted
+        - circle-android wait-for-boot
+        # unlock the emulator screen
+        - sleep 30
+        - adb shell input keyevent 82
+        - gradle check jacocoTestReport
+        # run tests  against the emulator.
+        - (./gradlew jacoco -PdisablePreDex):
+            timeout: 1800
+        # copy the build outputs to artifacts
+        - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+        # copy the test results to the test results directory.
+        - cp -r app/build/reports/jacoco/jacoco/html/* $CIRCLE_TEST_REPORTS
+   post:
+        - cp -R build/reports/* $CIRCLE_ARTIFACTS
