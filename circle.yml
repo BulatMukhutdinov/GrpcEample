@@ -53,7 +53,7 @@ test:
         - sleep 30
         - adb shell input keyevent 82
         # run tests  against the emulator.
-        - ./gradlew jacoco -PdisablePreDex
+        - (./gradlew jacoco -PdisablePreDex):
             timeout: 1800
         # copy the build outputs to artifacts
         - cp -r app/build/outputs $CIRCLE_ARTIFACTS
