@@ -1,6 +1,7 @@
 general:
     artifacts:
         - /home/ubuntu/GrpcEample/app/build/outputs/apk/
+        - /home/ubuntu/GrpcEample/app/build/reports/jacoco/test/html $CIRCLE_TEST_REPORTS/CodeCoverageReport
 
 machine:
     environment:
