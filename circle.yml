@@ -44,3 +44,4 @@ test:
         - cp -r app/build/outputs $CIRCLE_ARTIFACTS
         # copy the test results to the test results directory.
         - cp -r app/build/reports/jacoco/jacoco/html/* $CIRCLE_TEST_REPORTS
+        - cp -r app/build/reports/pitest/debug/* $CIRCLE_TEST_REPORTS

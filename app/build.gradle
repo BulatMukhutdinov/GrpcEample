@@ -62,6 +62,7 @@ android {
         //by default "${project.group}.*"
         excludedClasses = ['**Factory*', '**MembersInjector*', '**DaggerServiceComponent*', '**/databinding/*.*']
         pitestVersion = "1.2.0"
+        timestampedReports = false
         threads = 4
         timeoutFactor = 30000
         outputFormats = ['HTML']
