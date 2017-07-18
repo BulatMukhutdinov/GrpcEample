@@ -25,8 +25,6 @@ test:
         - mkdir -p appCt/build/test-report $CIRCLE_TEST_REPORTS/ComponentTests
         - mkdir -p appIt/build/reports/androidTests/connected $CIRCLE_TEST_REPORTS/AndroidTests
         - mkdir -p build/reports/jacoco/test/html $CIRCLE_TEST_REPORTS/CodeCoverageReport
-        - mkdir -p
-         - mkdir -p
         # start the build
         - (./gradlew assemble):
             timeout: 360
@@ -44,7 +42,7 @@ test:
         - (./gradlew jacoco -PdisablePreDex):
             timeout: 1800
         # copy the build outputs to artifacts
-        - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+        #- cp -r app/build/outputs $CIRCLE_ARTIFACTS
         # copy test results
         - mv app/build/reports/tests/debug $CIRCLE_TEST_REPORTS/AppUnitTests
         - mv appCt/build/test-report $CIRCLE_TEST_REPORTS/ComponentTests
