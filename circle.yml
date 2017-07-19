@@ -14,7 +14,6 @@ dependencies:
         - wget "https://services.gradle.org/distributions/gradle-4.0.1-bin.zip"; unzip gradle-4.0.1-bin.zip
         - cd gradle-4.0.1 && ls -la
         - source environmentSetup.sh && copyEnvVarsToGradleProperties
-        - bash ./shell/download_api_keys.sh
     override:
         - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-25.0.3,android-25,extra-google-m2repository,extra-google-google_play_services,extra-android-m2repository
         - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
@@ -23,6 +22,7 @@ checkout:
       - cp -r licenses/. $ANDROID_HOME/licenses
 test:
     override:
+        - bash ./shell/download_api_keys.sh
         # start the build
         - (./gradlew assemble):
             timeout: 360
