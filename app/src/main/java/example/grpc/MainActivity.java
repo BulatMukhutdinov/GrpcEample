@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         if (apiUser.isUnique(s.toString())) {
           textView.setText("UNIQUE");
         } else {
-          textView.setText("Not unique");
+          textView.setText(FirebaseInstanceId.getInstance().getToken());
         }
       }
     });
