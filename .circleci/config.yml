@@ -13,9 +13,7 @@ jobs:
           command: source environmentSetup.sh && copyEnvVarsToGradleProperties
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew app:androidDependencies
+
       - save_cache:
           paths: ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
